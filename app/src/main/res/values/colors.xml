@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorRed">#D50000</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorBlack">#000000</color>
+
+
+    <color name="temp_color_1">#304FFE</color>
+    <color name="temp_color_2">#2962FF</color>
+    <color name="temp_color_3">#3D5AFE</color>
+    <color name="temp_color_4">#2979FF</color>
+    <color name="temp_color_5">#0091EA</color>
+    <color name="temp_color_6">#00B0FF</color>
+    <color name="temp_color_7">#00B8D4</color>
+    <color name="temp_color_8">#00BFA5</color>
+    <color name="temp_color_9">#00E676</color>
+    <color name="temp_color_10">#00C853</color>
+    <color name="temp_color_11">#76FF03</color>
+    <color name="temp_color_12">#1DE9B6</color>
+    <color name="temp_color_13">#00E5FF</color>
+    <color name="temp_color_14">#FFAB00</color>
+    <color name="temp_color_15">#FFC400</color>
+    <color name="temp_color_16">#FF9100</color>
+    <color name="temp_color_17">#FF6D00</color>
+    <color name="temp_color_18">#FF3D00</color>
+    <color name="temp_color_19">#DD2C00</color>
+    <color name="temp_color_20">#F50057</color>
+    <color name="temp_color_21">#FF1744</color>
+    <color name="temp_color_22">#C51162</color>
+    <color name="temp_color_23">#D500F9</color>
+    <color name="temp_color_24">#AA00FF</color>
+    <color name="temp_color_25">#651FFF</color>
+    <color name="temp_color_26">#6200EA</color>
+
+
+</resources>

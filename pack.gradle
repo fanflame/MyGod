@@ -1,0 +1,120 @@
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+
+def releaseApkPath = ""
+def releaseApk = ''
+def apkMd5 = ""
+
+task packApk() {
+    group 'packapk'
+
+    dependsOn 'app:assembleRelease'
+    mustRunAfter 'app:assembleRelease'
+
+    delete 'app/build/outputs/apk/release'
+    delete 'releaseapks'
+    print "finsh deleteOldApks:\r\n"
+    doLast {
+        //get releaseApkPath
+        def path = 'app/build/outputs/apk/release/'
+        def file = new File(path)
+        print "release file exist:"+file.exists()+'\r\n'
+        if (file.exists()) {
+            String[] files = file.list()
+            if (files.length != 0) {
+                int length = files.length;
+                for (int i = 0; i < length; i++) {
+                    if (files[i].endsWith(".apk")) {
+                        print "release path:" + path + files[i]+'\r\n'
+                        releaseApk = files[i]
+                        releaseApkPath = path + files[i];
+                    }
+                }
+            }
+        }
+
+        //get md5
+        file = new File(releaseApkPath)
+        if (!file.exists()) {
+            return
+        }
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+        } catch (NoSuchAlgorithmException e) {
+            return "";
+        }
+        file.eachByte 4096, {
+            bytes, size -> md.update(bytes, 0, size);
+        }
+        apkMd5 = md.digest().collect { String.format "%02x", it }.join();
+        print String.format("The md5 of File %s is:\n%s", file.absolutePath, apkMd5)+'\r\n';
+
+        // copyRelease
+        File originFile = new File(releaseApkPath)
+        if (!originFile.exists()) {
+            return
+        }
+        path = 'releaseapks/'
+        file = new File(path)
+        if (!file.exists()) {
+            file.mkdirs()
+        }
+        originFile.renameTo(new File(path, originFile.name))
+    }
+}
+
+task pushApk(type:Exec) {
+    description 'push apk to remote origin'
+    dependsOn packApk
+    mustRunAfter packApk
+
+//    workingDir '../tomcat/bin'
+
+    //on linux
+    commandLine './pushapk.sh'
+
+    //store the output instead of printing to the console:
+    standardOutput = new ByteArrayOutputStream()
+
+    //extension method stopTomcat.output() can be used to obtain the output:
+    ext.output = {
+        return standardOutput.toString()
+    }
+}
+
+task saveJsonVersionApk(){
+    description 'save json version'
+    dependsOn pushApk
+    mustRunAfter pushApk
+    doLast{
+        def text = "{\n" +
+                "\"version\":\"${extVersionName}\",\n" +
+                "\"appurl\":\"https://github.com/fanflame/MyGod/blob/master/releaseapks/${releaseApk}?raw=true\",\n" +
+                "\"updateContent\":\"\",\n" +
+                "  \"md5\": \"${apkMd5}\"\n" +
+                "}"
+        def targetFile = new File("../MyGodData/version.json")
+        targetFile.withOutputStream {  osm ->
+            osm.write(text.getBytes())
+        }
+    }
+}
+
+task pushJsonVersion(type:Exec) {
+    description 'push apk version to remote origin'
+    dependsOn saveJsonVersionApk
+    mustRunAfter saveJsonVersionApk
+    //on linux
+    commandLine './pushapkverionjson.sh'
+
+    //store the output instead of printing to the console:
+    standardOutput = new ByteArrayOutputStream()
+
+    //extension method stopTomcat.output() can be used to obtain the output:
+    ext.output = {
+        return standardOutput.toString()
+    }
+}
+
+
