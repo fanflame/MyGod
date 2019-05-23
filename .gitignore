@@ -11,6 +11,6 @@
 /build
 /captures
 .externalNativeBuild
-.keystore
+/keystore/fanyiran.keystore
 .ii
 /app/gradle.properties
