@@ -27,7 +27,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/activity_holderbg" />
+                    app:src="@drawable/placeholder" />
 
                 <com.fanyiran.librollover.RollOverFrameLayout
                     android:id="@+id/tvLocation"

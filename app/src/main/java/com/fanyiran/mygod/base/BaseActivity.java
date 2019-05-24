@@ -2,7 +2,7 @@ package com.fanyiran.mygod.base;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.fanyiran.mygod.appupdate.UpdateAppJson;
+import com.fanyiran.mygod.appupdate.JsonUpdateApp;
 import com.fanyiran.mygod.utils.dialog.AppUpdateDialogFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -26,11 +26,11 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUpdateApp(UpdateAppJson updateAppJson){
+    public void onUpdateApp(JsonUpdateApp jsonUpdateApp){
         if (appUpdateDialogFragment != null) {
             appUpdateDialogFragment.dismiss();
         }
-        appUpdateDialogFragment = AppUpdateDialogFragment.getInstance(updateAppJson);
+        appUpdateDialogFragment = AppUpdateDialogFragment.getInstance(jsonUpdateApp);
         appUpdateDialogFragment.show(getSupportFragmentManager(),"");
     }
 

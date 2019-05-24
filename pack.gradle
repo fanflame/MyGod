@@ -1,3 +1,6 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+
 import java.security.MessageDigest
 import java.security.NoSuchAlgorithmException
 
@@ -88,15 +91,14 @@ task saveJsonVersionApk(){
     dependsOn pushApk
     mustRunAfter pushApk
     doLast{
-        def text = "{\n" +
-                "\"version\":\"${extVersionName}\",\n" +
-                "\"appurl\":\"https://github.com/fanflame/MyGod/blob/master/releaseapks/${releaseApk}?raw=true\",\n" +
-                "\"updateContent\":\"\",\n" +
-                "  \"md5\": \"${apkMd5}\"\n" +
-                "}"
-        def targetFile = new File("../MyGodData/version.json")
-        targetFile.withOutputStream {  osm ->
-            osm.write(text.getBytes())
+        def jsonFile = file("../MyGodData/version.json")
+        def json =  new JsonSlurper().parseText(jsonFile.text)
+        json.verion = "${extVersionName}"
+        json.appurl = "https://github.com/fanflame/MyGod/blob/master/releaseapks/${releaseApk}?raw=true"
+        json.md5 = "${apkMd5}"
+        def jsonStr = JsonOutput.toJson(json)
+        jsonFile.withOutputStream {  osm ->
+            osm.write(jsonStr.getBytes())
         }
     }
 }

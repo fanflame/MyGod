@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.FrameLayout;
@@ -19,21 +20,33 @@ import com.fanyiran.librollover.RollConfig;
 import com.fanyiran.librollover.RollOverFrameLayout;
 import com.fanyiran.mygod.LocationHelper;
 import com.fanyiran.mygod.R;
+import com.fanyiran.mygod.appupdate.JsonImages;
 import com.fanyiran.mygod.base.BaseActivity;
+import com.fanyiran.mygod.base.http.HttpManager;
 import com.fanyiran.mygod.base.mvp.AbstractPresenter;
 import com.fanyiran.mygod.base.mvp.IView;
+import com.fanyiran.mygod.eventbeans.ImageJsonUpdate;
+import com.fanyiran.mygod.utils.Constants;
+import com.fanyiran.mygod.utils.FileUtils;
 import com.fanyiran.mygod.utils.image.ImageLoader;
 import com.fanyiran.mygod.eventbeans.LocationEventBean;
 import com.fanyiran.mygod.base.http.WeatherData;
 import com.fanyiran.mygod.utils.TemperatuerColor;
+import com.fanyiran.utils.AsycTaskUtil;
 import com.fanyiran.utils.LogUtil;
 import com.fanyiran.utils.ToastUtils;
+import com.fanyiran.utils.looperexecute.CustomRunnable;
+import com.fanyiran.utils.looperexecute.MainLooperExecuteUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+import java.util.concurrent.Callable;
 
 import android.view.View;
 
@@ -121,6 +134,43 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
         presenter.getWeather(location.getAdCode());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onImageJsonUpdate(ImageJsonUpdate jsonImages) {
+        AsycTaskUtil.getInstance().createAsycTask(new Callable(){
+
+            @Override
+            public Object call() throws Exception {
+                JsonImages beanFromJson = (JsonImages) FileUtils.getBeanFromJson(JsonImages.class,
+                        Constants.APP_SD_PATH, Constants.JSON_IMAGES);
+                if (beanFromJson == null) {
+                    LogUtil.v(TAG,"imagejson == null");
+                    return null;
+                }
+                Random random = new Random();
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR,0);
+                calendar.set(Calendar.AM,0);
+                calendar.set(Calendar.SECOND,0);
+                calendar.set(Calendar.MILLISECOND,0);
+                calendar.set(Calendar.MINUTE,0);
+
+                random.setSeed(calendar.getTimeInMillis());
+                int index = random.nextInt(beanFromJson.getImages().size());
+                String imageUrl = Constants.getImageUrl(beanFromJson.getImages().get(index));
+                LogUtil.v(TAG,"ssssss:"+imageUrl);
+                ImageLoader.getInstance().loadImageWithCached(WeatherActivity.this,
+                        imageUrl,
+                        ivLocal, R.drawable.activity_holderbg);
+                return null;
+            }
+        }, new AsycTaskUtil.OnTaskListener() {
+            @Override
+            public void onTaskFinished(Object result) {
+
+            }
+        });
+    }
+
     private void initPresenter() {
         if (presenter == null) {
             presenter = new WeatherPresenter(this);
@@ -154,9 +204,9 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
     @Override
     public void onRefresh() {
         LocationHelper.getInstance().startLocation(this);
-        ImageLoader.getInstance().loadImageWithCached(this,
-                "https://mir-s3-cdn-cf.behance.net/project_modules/fs/2c4c2545197825.582971199aa8a.jpg",
-                ivLocal, R.drawable.activity_holderbg);
+//        ImageLoader.getInstance().loadImageWithCached(this,
+//                "https://mir-s3-cdn-cf.behance.net/project_modules/fs/2c4c2545197825.582971199aa8a.jpg",
+//                ivLocal, R.drawable.activity_holderbg);
 //        HttpManager.getInstance().getImageJson();
     }
 
@@ -280,8 +330,7 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
                 , Manifest.permission.WRITE_EXTERNAL_STORAGE
                 , Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS
                 , Manifest.permission.BLUETOOTH
-                , Manifest.permission.BLUETOOTH_ADMIN
-                , Manifest.permission.REQUEST_INSTALL_PACKAGES};
+                , Manifest.permission.BLUETOOTH_ADMIN};
         ArrayList<String> result = new ArrayList<>(permissions.length);
         for (String permission : permissions) {
             if (checkSelfPermission(permission) == PackageManager.PERMISSION_DENIED) {
