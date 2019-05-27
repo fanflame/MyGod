@@ -19,8 +19,6 @@ public class WeatherApplication extends Application {
         CrashReport.initCrashReport(getApplicationContext(), "90f847d6ff", false);
         LocationHelper.getInstance().startLocation(this);
         HttpManager.getInstance().initHttpClient(new OkHttpHelper());
-
-        AppUpdateManager.getInstance().checkUpdateApp();
     }
 
     @Override

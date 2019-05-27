@@ -5,9 +5,9 @@ import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -20,35 +20,31 @@ import com.fanyiran.librollover.RollConfig;
 import com.fanyiran.librollover.RollOverFrameLayout;
 import com.fanyiran.mygod.LocationHelper;
 import com.fanyiran.mygod.R;
+import com.fanyiran.mygod.appupdate.AppUpdateManager;
 import com.fanyiran.mygod.appupdate.JsonImages;
 import com.fanyiran.mygod.base.BaseActivity;
-import com.fanyiran.mygod.base.http.HttpManager;
+import com.fanyiran.mygod.base.http.WeatherData;
 import com.fanyiran.mygod.base.mvp.AbstractPresenter;
 import com.fanyiran.mygod.base.mvp.IView;
 import com.fanyiran.mygod.eventbeans.ImageJsonUpdate;
+import com.fanyiran.mygod.eventbeans.LocationEventBean;
 import com.fanyiran.mygod.utils.Constants;
 import com.fanyiran.mygod.utils.FileUtils;
-import com.fanyiran.mygod.utils.image.ImageLoader;
-import com.fanyiran.mygod.eventbeans.LocationEventBean;
-import com.fanyiran.mygod.base.http.WeatherData;
 import com.fanyiran.mygod.utils.TemperatuerColor;
+import com.fanyiran.mygod.utils.image.ImageLoader;
 import com.fanyiran.utils.AsycTaskUtil;
 import com.fanyiran.utils.LogUtil;
 import com.fanyiran.utils.ToastUtils;
 import com.fanyiran.utils.looperexecute.CustomRunnable;
 import com.fanyiran.utils.looperexecute.MainLooperExecuteUtil;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.Callable;
-
-import android.view.View;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -106,6 +102,7 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
         }
 
         presenter.getLastWeather();
+        AppUpdateManager.getInstance().checkUpdateApp();
 
     }
 
@@ -156,18 +153,19 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
 
                 random.setSeed(calendar.getTimeInMillis());
                 int index = random.nextInt(beanFromJson.getImages().size());
-                String imageUrl = Constants.getImageUrl(beanFromJson.getImages().get(index));
-                LogUtil.v(TAG,"ssssss:"+imageUrl);
-                ImageLoader.getInstance().loadImageWithCached(WeatherActivity.this,
-                        imageUrl,
-                        ivLocal, R.drawable.activity_holderbg);
-                return null;
+                return Constants.getImageUrl(beanFromJson.getImages().get(index));
             }
-        }, new AsycTaskUtil.OnTaskListener() {
-            @Override
-            public void onTaskFinished(Object result) {
-
-            }
+        }, result -> {
+            CustomRunnable runnable = new CustomRunnable();
+            runnable.setRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    ImageLoader.getInstance().loadImageWithCached(WeatherActivity.this,
+                            (String) result,
+                            ivLocal, R.drawable.placeholder);
+                }
+            });
+            MainLooperExecuteUtil.getInstance().postDelay(runnable);
         });
     }
 
@@ -204,10 +202,6 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
     @Override
     public void onRefresh() {
         LocationHelper.getInstance().startLocation(this);
-//        ImageLoader.getInstance().loadImageWithCached(this,
-//                "https://mir-s3-cdn-cf.behance.net/project_modules/fs/2c4c2545197825.582971199aa8a.jpg",
-//                ivLocal, R.drawable.activity_holderbg);
-//        HttpManager.getInstance().getImageJson();
     }
 
     @OnClick(R.id.ivMenu)

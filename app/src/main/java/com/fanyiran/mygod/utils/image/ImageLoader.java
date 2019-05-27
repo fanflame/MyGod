@@ -6,6 +6,8 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.request.transition.DrawableCrossFadeFactory;
+import com.fanyiran.mygod.utils.GlideApp;
+import com.fanyiran.mygod.utils.MyGlideApp;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
@@ -30,7 +32,7 @@ public class ImageLoader {
      */
     public void loadImageWithCached(Context context, String url, ImageView imageView,int resourceId ) {
         DrawableCrossFadeFactory factory =
-                new DrawableCrossFadeFactory.Builder().setCrossFadeEnabled(true).build();
-        Glide.with(context).load(url).optionalFitCenter().transition(withCrossFade(factory)).dontAnimate().priority(Priority.IMMEDIATE).into(imageView);
+                new DrawableCrossFadeFactory.Builder(1000).setCrossFadeEnabled(true).build();
+        Glide.with(context).load(url).placeholder(resourceId).optionalFitCenter().transition(withCrossFade(factory)).dontAnimate().priority(Priority.IMMEDIATE).into(imageView);
     }
 }
