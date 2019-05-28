@@ -1,6 +1,7 @@
 - 更新版本步骤
-1. 更新extVersionCode & extVersionName
-2. ./gradlew pushJsonVersion
+1. 切换到master分支
+2. 更新extVersionCode & extVersionName
+3. ./gradlew pushJsonVersion
 
 - task调用顺序
 ```

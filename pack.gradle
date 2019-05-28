@@ -93,7 +93,7 @@ task saveJsonVersionApk(){
     doLast{
         def jsonFile = file("../MyGodData/version.json")
         def json =  new JsonSlurper().parseText(jsonFile.text)
-        json.verion = "${extVersionName}"
+        json.version = "${extVersionName}"
         json.appurl = "https://github.com/fanflame/MyGod/blob/master/releaseapks/${releaseApk}?raw=true"
         json.md5 = "${apkMd5}"
         def jsonStr = JsonOutput.toJson(json)
