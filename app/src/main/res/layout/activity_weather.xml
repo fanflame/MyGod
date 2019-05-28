@@ -26,8 +26,7 @@
                     android:id="@+id/ivLocal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
-                    app:src="@drawable/placeholder" />
+                    android:scaleType="centerCrop"/>
 
                 <com.fanyiran.librollover.RollOverFrameLayout
                     android:id="@+id/tvLocation"
@@ -118,7 +117,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start|left"
         android:fitsSystemWindows="true"
-        android:background="@color/colorPrimary">
+        android:background="@color/colorWhite">
 
         <fragment
             android:layout_width="match_parent"

@@ -156,16 +156,9 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
                 return Constants.getImageUrl(beanFromJson.getImages().get(index));
             }
         }, result -> {
-            CustomRunnable runnable = new CustomRunnable();
-            runnable.setRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    ImageLoader.getInstance().loadImageWithCached(WeatherActivity.this,
-                            (String) result,
-                            ivLocal, R.drawable.placeholder);
-                }
-            });
-            MainLooperExecuteUtil.getInstance().postDelay(runnable);
+            ImageLoader.getInstance().loadImageWithCached(WeatherActivity.this,
+                    (String) result,
+                    ivLocal, R.drawable.placeholder);
         });
     }
 
@@ -351,6 +344,7 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
                 }
             }
             onRefresh();
+            AppUpdateManager.getInstance().checkUpdateApp();
         }
     }
 }

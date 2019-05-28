@@ -9,3 +9,5 @@
 5. 图片更新
 6. 网络监听？
 ~~7. 脚本打包 计算md5值~~
+8. https://github.com/tommybuonomo/dotsindicator
+9. https://github.com/DanluTeam/ColdStart

@@ -16,6 +16,10 @@ import com.fanyiran.mygod.R;
 import com.fanyiran.mygod.utils.Constants;
 import com.fanyiran.mygod.utils.FileUtils;
 import com.fanyiran.mygod.utils.Utils;
+import com.fanyiran.utils.AsycTaskUtil;
+import com.fanyiran.utils.ToastUtils;
+
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,8 +51,14 @@ public class LeftContainerFragment extends Fragment {
     @OnClick(R.id.btnClearAllCache)
     public void onClearAllCache(){
         // TODO: 2019-05-20 异步？
-        Glide.get(getContext()).clearDiskCache();
-        FileUtils.clearPath(Constants.APP_DOWNLOAD_PATH);
+        AsycTaskUtil.getInstance().createAsycTask(() -> {
+            Glide.get(getContext()).clearDiskCache();
+            FileUtils.clearPath(Constants.APP_DOWNLOAD_PATH);
+            return null;
+        },result->{
+            ToastUtils.showText(getContext(),"清除完毕");
+        });
+
     }
 
     private void initView(){

@@ -84,4 +84,5 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
 
     implementation 'com.tencent.bugly:crashreport:3.0.0'
+    implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:3.0.3'
 }
