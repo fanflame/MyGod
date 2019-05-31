@@ -25,7 +25,7 @@ public class CustomViewTransition implements Transition {
     }
 
     public void setLetAnimator(int value) {
-        if (value == 0) {
+        if (value <= 20) {
             adapter.setDrawable(current);
         }
         if (adapter.getView() != null) {
