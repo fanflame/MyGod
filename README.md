@@ -2,6 +2,7 @@
 1. 切换到master分支
 2. 更新extVersionCode & extVersionName
 3. ./gradlew pushJsonVersion
+pushJsonVersion脚本作用：打包release并push apk,修改MyGodData中version.json版本号以及md5值
 
 - task调用顺序
 ```
