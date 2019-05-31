@@ -108,7 +108,7 @@ public class FileUtils {
             return false;
         }
         File file = new File(path);
-        if (file.exists()) {
+        if (!file.exists()) {
             return false;
         }
         if (file.exists() && file.isFile()) {
@@ -119,7 +119,7 @@ public class FileUtils {
             return true;
         }
         for (File file1 : files) {
-            clearPath(path);
+            clearPath(file1.getAbsolutePath());
         }
         return true;
     }

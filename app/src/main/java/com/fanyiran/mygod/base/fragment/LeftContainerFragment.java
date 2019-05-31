@@ -53,7 +53,7 @@ public class LeftContainerFragment extends Fragment {
         // TODO: 2019-05-20 异步？
         AsycTaskUtil.getInstance().createAsycTask(() -> {
             Glide.get(getContext()).clearDiskCache();
-            FileUtils.clearPath(Constants.APP_DOWNLOAD_PATH);
+            FileUtils.clearPath(Constants.APP_SD_PATH);
             return null;
         },result->{
             ToastUtils.showText(getContext(),"清除完毕");

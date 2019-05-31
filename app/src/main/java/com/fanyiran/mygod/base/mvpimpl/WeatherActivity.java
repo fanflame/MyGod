@@ -8,6 +8,8 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -49,6 +51,7 @@ import java.util.concurrent.Callable;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import com.fanyiran.mygod.Utils;
 
 public class WeatherActivity extends BaseActivity implements IView, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "WeatherActivity";
@@ -87,8 +90,13 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        getWindow().setStatusBarColor(Color.TRANSPARENT);
+        //去除标题栏
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //去除状态栏
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Utils.setFullScreenWindowLayoutInDisplayCutout(getWindow());
+//        Utils.setFullScreenWindowLayoutInDisplayCutout(getWindow());
         setContentView(R.layout.activity_weather);
         ButterKnife.bind(this);
         initPresenter();
@@ -147,6 +155,7 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
                 Calendar calendar = Calendar.getInstance();
                 calendar.set(Calendar.HOUR,0);
                 calendar.set(Calendar.AM,0);
+                calendar.set(Calendar.AM_PM,0);
                 calendar.set(Calendar.SECOND,0);
                 calendar.set(Calendar.MILLISECOND,0);
                 calendar.set(Calendar.MINUTE,0);
@@ -199,8 +208,8 @@ public class WeatherActivity extends BaseActivity implements IView, SwipeRefresh
 
     @OnClick(R.id.ivMenu)
     public void onMenuClick(){
-        ToastUtils.showText(this,getResources().getString(R.string.coming_soon));
-//        drawerLayout.openDrawer(leftContainer);
+//        ToastUtils.showText(this,getResources().getString(R.string.coming_soon));
+        drawerLayout.openDrawer(leftContainer);
     }
 
     @Override
